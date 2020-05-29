@@ -1,6 +1,7 @@
 use proc_macro2::{Ident, Span};
 use quote::quote;
 use syn::{Error, GenericArgument, PathArguments, Result, Type};
+use crate::utils::unwrap_ty_group;
 
 pub enum OutputType<'a> {
     Value(&'a Type),
@@ -9,7 +10,7 @@ pub enum OutputType<'a> {
 
 impl<'a> OutputType<'a> {
     pub fn parse(input: &'a Type) -> Result<Self> {
-        let ty = if let Type::Path(p) = input {
+        let ty = if let Type::Path(p) = unwrap_ty_group(input) {
             if p.path.segments.last().unwrap().ident == "FieldResult" {
                 if let PathArguments::AngleBracketed(args) =
                     &p.path.segments.last().unwrap().arguments

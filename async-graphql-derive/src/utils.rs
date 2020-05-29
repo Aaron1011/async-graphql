@@ -1,7 +1,7 @@
 use proc_macro2::{Span, TokenStream};
 use proc_macro_crate::crate_name;
 use quote::quote;
-use syn::{Attribute, Error, Expr, Ident, Lit, Meta, MetaList, NestedMeta, Result};
+use syn::{Attribute, Error, Expr, Ident, Lit, Meta, MetaList, NestedMeta, Result, Type, TypeGroup};
 
 pub fn get_crate_name(internal: bool) -> TokenStream {
     if internal {
@@ -29,6 +29,14 @@ pub fn check_reserved_name(name: &str, internal: bool) -> Result<()> {
         ))
     } else {
         Ok(())
+    }
+}
+
+pub fn unwrap_ty_group<'a>(ty: &'a Type) -> &'a Type {
+    if let Type::Group(TypeGroup { elem, .. }) = ty {
+        elem
+    } else {
+        ty
     }
 }
 

@@ -1,6 +1,6 @@
 use crate::args;
 use crate::output_type::OutputType;
-use crate::utils::{check_reserved_name, get_crate_name, get_rustdoc};
+use crate::utils::{check_reserved_name, get_crate_name, get_rustdoc, unwrap_ty_group};
 use inflector::Inflector;
 use proc_macro::TokenStream;
 use quote::quote;
@@ -8,7 +8,8 @@ use syn::{Block, Error, FnArg, ImplItem, ItemImpl, Pat, Result, ReturnType, Type
 
 pub fn generate(object_args: &args::Object, item_impl: &mut ItemImpl) -> Result<TokenStream> {
     let crate_name = get_crate_name(object_args.internal);
-    let (self_ty, self_name) = match item_impl.self_ty.as_ref() {
+    
+    let (self_ty, self_name) = match unwrap_ty_group(item_impl.self_ty.as_ref()) {
         Type::Path(path) => (
             path,
             path.path

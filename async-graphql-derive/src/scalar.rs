@@ -1,11 +1,11 @@
 use crate::args;
-use crate::utils::{check_reserved_name, get_crate_name, get_rustdoc};
+use crate::utils::{check_reserved_name, get_crate_name, get_rustdoc, unwrap_ty_group};
 use proc_macro::TokenStream;
 use quote::quote;
 use syn::{Error, ItemImpl, Result, Type};
 
 pub fn generate(scalar_args: &args::Scalar, item_impl: &mut ItemImpl) -> Result<TokenStream> {
-    let self_name = match item_impl.self_ty.as_ref() {
+    let self_name = match unwrap_ty_group(item_impl.self_ty.as_ref()) {
         Type::Path(path) => path
             .path
             .segments
